@@ -62,6 +62,7 @@ music = Music()
 
 led = Pin('LED')
 
+DEFAULT_HEAD_PAN = 0
 DEFAULT_HEAD_TILT = 20
 
 # Vilib start
@@ -229,6 +230,7 @@ def main():
 
     while True:
         if input_mode == 'voice':
+            my_car.set_cam_pan_angle(DEFAULT_HEAD_PAN)
             my_car.set_cam_tilt_angle(DEFAULT_HEAD_TILT)
 
             # listen
@@ -247,6 +249,7 @@ def main():
 
             # stt
             # ----------------------------------------------------------------
+            gray_print('stt ...')
             st = time.time()
             _result = openai_helper.stt(audio, language=LANGUAGE)
             gray_print(f"stt takes: {time.time() - st:.3f} s")
@@ -272,6 +275,7 @@ def main():
 
         # chat-gpt
         # ---------------------------------------------------------------- 
+        gray_print(f'thinking ...')
         response = {}
         st = time.time()
 
