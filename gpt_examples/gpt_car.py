@@ -48,6 +48,10 @@ VOLUME_DB = 3
 # https://platform.openai.com/docs/guides/text-to-speech/supported-languages
 TTS_VOICE = 'echo'
 
+# voice instructions for vibe
+# https://www.openai.fm/
+VOICE_INSTRUCTIONS = ""
+
 SOUND_EFFECT_ACTIONS = ["honking", "start engine"]
 
 # car init 
@@ -330,7 +334,7 @@ def main():
                 st = time.time()
                 _time = time.strftime("%y-%m-%d_%H-%M-%S", time.localtime())
                 _tts_f = f"./tts/{_time}_raw.wav"
-                _tts_status = openai_helper.text_to_speech(answer, _tts_f, TTS_VOICE, response_format='wav') # alloy, echo, fable, onyx, nova, and shimmer
+                _tts_status = openai_helper.text_to_speech(answer, _tts_f, TTS_VOICE, response_format='wav', instructions=VOICE_INSTRUCTIONS) # alloy, echo, fable, onyx, nova, and shimmer
                 if _tts_status:
                     tts_file = f"./tts/{_time}_{VOLUME_DB}dB.wav"
                     _tts_status = sox_volume(_tts_f, tts_file, VOLUME_DB)
