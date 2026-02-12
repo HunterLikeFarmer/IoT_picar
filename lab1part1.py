@@ -4,33 +4,32 @@ import random
 
 speed = 30
 
-BACK_TIME = 0.45
-TURN_TIME = 0.55
-STOP_TIME = 0.05
+BACK_SLEEP = 0.45
+TURN_SLEEP = 0.55
+STOP_SLEEP = 0.05
 
 # check if theres an obstacle
 def blocked(scan_list):
-    front = scan_list[3:7]
-    return front != [2, 2, 2, 2]
+    return scan_list[3:7] != [2, 2, 2, 2]
 
 def change_dir():
     fc.stop()
-    time.sleep(STOP_TIME)
+    time.sleep(STOP_SLEEP)
 
     # back up
     fc.backward(speed)
-    time.sleep(BACK_TIME)
+    time.sleep(BACK_SLEEP)
     fc.stop()
-    time.sleep(STOP_TIME)
+    time.sleep(STOP_SLEEP)
 
     # choose random direction
     if random.choice([True, False]):
         fc.turn_left(speed)
     else:
         fc.turn_right(speed)
-    time.sleep(TURN_TIME)
+    time.sleep(TURN_SLEEP)
     fc.stop()
-    time.sleep(STOP_TIME)
+    time.sleep(STOP_SLEEP)
 
 def main():
     while True:
