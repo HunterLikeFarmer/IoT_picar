@@ -2,6 +2,8 @@ from smbus2 import SMBus
 from .utils import soft_reset
 import time
 
+# absract class for I2C protocol
+
 class I2C(object):
     MASTER = 0
     SLAVE  = 1

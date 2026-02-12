@@ -1,5 +1,10 @@
 import threading
 
+
+# Use pwm pin for speed
+# one direction pin for forward/reverse
+
+
 class Motor():
     STEP = 10
     DELAY = 0.1

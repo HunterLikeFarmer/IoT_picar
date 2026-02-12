@@ -1,5 +1,7 @@
 import RPi.GPIO as GPIO
 
+# abstract away GPIO
+
 class Pin(object):
     OUT = GPIO.OUT                  
     IN = GPIO.IN                   

@@ -3,6 +3,7 @@ import time, math
 import threading
 from . import *
 
+# Measure the current speed of a car through GPIO (read-only now)
 class Speed():
     def __init__(self, pin):
         self.speed_counter = 0

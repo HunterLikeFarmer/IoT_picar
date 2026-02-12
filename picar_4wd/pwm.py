@@ -1,6 +1,8 @@
 import smbus, math
 from .i2c import I2C
 
+# PWM means Pulse Width Modulation
+# Also through I2C protocol
 class PWM(I2C):
     REG_CHN = 0x20
     REG_FRE = 0x30

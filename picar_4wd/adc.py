@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 from .i2c import I2C
 
+# analog driver, initialize it with "A_" where A means the analog channel (raw voltage channel),
+# which is a memory-mapped converter that converts analog to digit signal
+# The analog is by I2C protocol
 class ADC(I2C):
     ADDR=0x14                   # i2c_address 0x14
 

@@ -3,6 +3,7 @@ from picar_4wd.servo import Servo
 from picar_4wd.pwm import PWM
 from picar_4wd.pin import Pin
 
+# detect the obstacle using two GPIO
 class Ultrasonic():
     ANGLE_RANGE = 180
     STEP = 18

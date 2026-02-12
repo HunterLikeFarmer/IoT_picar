@@ -1,5 +1,6 @@
 from .utils import mapping
 
+# Takes in an angle, converts it to PWN signal and send it through PWN pin
 class Servo():
     PERIOD = 4095
     PRESCALER = 10
