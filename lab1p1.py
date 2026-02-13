@@ -11,7 +11,7 @@ def main():
         while True:
             d = round(px.ultrasonic.read(), 2)
             print(d)
-            if d <= OBJECT_CLOSE:
+            if d <= OBJECT_CLOSE and d > 0:
                 px.stop()
                 time.sleep(0.5)
                 px.backward(SPEED)
@@ -22,7 +22,9 @@ def main():
                 else:
                     px.set_dir_servo_angle(30)
                 px.forward(SPEED)
-
+            else:
+                px.set_dir_servo_angle(0)
+                px.forward(SPEED)
 
 
     finally:
