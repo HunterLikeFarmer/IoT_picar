@@ -15,7 +15,7 @@ def main():
                 px.stop()
                 time.sleep(0.5)
                 if random.randint(0, 1) == 0:
-                    px.set_dir_servo_angle(-30)
+                    px.set_dir_servo_angle(-40)
                 else:
                     px.set_dir_servo_angle(30)
                 px.backward(SPEED)
