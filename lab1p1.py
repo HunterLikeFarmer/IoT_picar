@@ -14,14 +14,13 @@ def main():
             if d <= OBJECT_CLOSE and d > 0:
                 px.stop()
                 time.sleep(0.5)
-                px.backward(SPEED)
-                time.sleep(1)
-                px.stop()
                 if random.randint(0, 1) == 0:
                     px.set_dir_servo_angle(-30)
                 else:
                     px.set_dir_servo_angle(30)
-                px.forward(SPEED)
+                px.backward(SPEED)
+                time.sleep(1)
+                px.stop()
             else:
                 px.set_dir_servo_angle(0)
                 px.forward(SPEED)
