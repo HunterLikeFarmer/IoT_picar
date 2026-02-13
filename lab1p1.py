@@ -10,6 +10,7 @@ def main():
         px = Picarx()
         while True:
             d = round(px.ultrasonic.read(), 2)
+            print(d)
             if d <= OBJECT_CLOSE:
                 px.stop()
                 time.sleep(0.5)
