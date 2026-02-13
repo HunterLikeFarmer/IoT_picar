@@ -2,7 +2,7 @@ from picarx import Picarx
 import time
 import random
 
-SPEED = 75
+SPEED = 25
 OBJECT_CLOSE = 20
 
 def main():
