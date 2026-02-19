@@ -25,6 +25,7 @@ def main():
             px.set_cam_pan_angle(pan_angle)
             d = round(px.ultrasonic.read(), 2)
             if (d > 0):
+                print((d, pan_angle))
                 object_array[round(d * np.cos(pan_angle)) + 10, round(d * np.sin(pan_angle)) + 0] = 1
         time.sleep(0.1)
         px.set_cam_pan_angle(0)
