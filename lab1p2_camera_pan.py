@@ -23,12 +23,12 @@ def main():
             time.sleep(0.1)
             pan_angle = pan_angle + 2
             px.set_cam_pan_angle(pan_angle)
-            d = round(px.ultrasonic.read(), 2)
+            d = round(px.ultrasonic.read() / 10, 2)
             if (d > 0):
                 print((d, pan_angle))
                 x_val = round(d * np.cos(pan_angle)) + 10
                 y_val = round(d * np.sin(pan_angle)) + 0
-                if (x_val < 0 or x_val > 20 or y_val < 0 or y_val > 20):
+                if (x_val < 0 or x_val >= 20 or y_val < 0 or y_val >= 20):
                     continue
                 print("Added to: ", (x_val, y_val))
                 object_array[x_val, y_val] = 1
