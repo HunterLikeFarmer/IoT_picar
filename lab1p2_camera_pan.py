@@ -35,7 +35,6 @@ def main():
         px.set_cam_pan_angle(0)
         for i in range (0, ARRAY_HEIGHT):
             print(object_array[i,:])
-            print("\n")
 
     finally:
         px.stop()
