@@ -26,7 +26,11 @@ def main():
             d = round(px.ultrasonic.read(), 2)
             if (d > 0):
                 print((d, pan_angle))
-                object_array[round(d * np.cos(pan_angle)) + 10, round(d * np.sin(pan_angle)) + 0] = 1
+                x_val = round(d * np.cos(pan_angle)) + 10
+                y_val = round(d * np.sin(pan_angle)) + 0
+                if (x_val < 0 or x_val > 20 or y_val < 0 or y_val > 20):
+                    continue
+                object_array[x_val, y_val] = 1
         time.sleep(0.1)
         px.set_cam_pan_angle(0)
         for i in range (0, ARRAY_HEIGHT):
