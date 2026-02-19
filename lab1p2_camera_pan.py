@@ -31,7 +31,7 @@ def main():
                 if (x_val < 0 or x_val >= 20 or y_val < 0 or y_val >= 20):
                     continue
                 print("Added to: ", (x_val, y_val))
-                object_array[x_val, y_val] = 1
+                object_array[y_val, x_val] = 1
         time.sleep(0.1)
         px.set_cam_pan_angle(0)
         print(object_array)
