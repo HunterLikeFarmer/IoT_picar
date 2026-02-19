@@ -14,9 +14,11 @@ def main():
         pan_angle = -60
         px.set_cam_pan_angle(pan_angle)
         for i in range(0, 120):
-            time.sleep(0.5)
-            pan_angle = pan_angle + 1
+            time.sleep(0.1)
+            pan_angle = pan_angle + 2
             px.set_cam_pan_angle(pan_angle)
+        time.sleep(0.1)
+        px.set_cam_pan_angle(0)
 
     finally:
         px.stop()
