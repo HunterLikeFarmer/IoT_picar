@@ -34,8 +34,7 @@ def main():
                 object_array[x_val, y_val] = 1
         time.sleep(0.1)
         px.set_cam_pan_angle(0)
-        for i in range (0, ARRAY_HEIGHT):
-            print(object_array[i,:])
+        print(object_array)
 
     finally:
         px.stop()
