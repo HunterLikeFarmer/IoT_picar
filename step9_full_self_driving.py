@@ -4,7 +4,7 @@ import numpy as np
 from picarx import Picarx
 from vilib import Vilib
 
-# --- Configuration ---
+# global variable
 GRID_WIDTH = 30
 GRID_HEIGHT = 30
 CAR_POS = (GRID_WIDTH // 2, 0)  # Car starts at bottom-center
@@ -13,7 +13,7 @@ CLEARANCE_RADIUS = 2
 STEP_TIME = 0.5  
 SPEED = 30
 
-# --- A* Pathfinding Algorithm ---
+# A* Pathfinding Algorithm
 def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
@@ -59,7 +59,7 @@ def astar(grid, start, goal):
                 
     return None
 
-# --- Mapping & Obstacle Processing ---
+# Mapping and obstacle processing
 def add_clearance(grid, radius=1):
     new_grid = np.copy(grid)
     rows, cols = grid.shape
@@ -94,7 +94,7 @@ def scan_environment(px):
     time.sleep(0.2)
     return grid
 
-# --- Movement Execution ---
+# Execution
 def execute_path_step(px, next_node, current_node):
     dx = next_node[0] - current_node[0]
     dy = next_node[1] - current_node[1]
@@ -115,18 +115,18 @@ def execute_path_step(px, next_node, current_node):
     time.sleep(STEP_TIME)
     px.stop()
 
-# --- Main Self-Driving Loop ---
+# Self driving Loop
 def main():
     px = Picarx()
     current_pos = CAR_POS
     
-    # 1. Initialize Computer Vision (Vilib)
+    # 1. Initialize Vilib
     print("Starting camera for Stop Sign detection...")
     Vilib.camera_start(vflip=False, hflip=False)
     Vilib.display(local=False, web=True)
     time.sleep(2)
     
-    # We use color detection to find the Stop Sign (Red) as our workaround
+    # We use color detection to find the Stop Sign (Red)
     Vilib.color_detect("red")
     
     # Cooldown to prevent stopping at the same sign infinitely
@@ -135,18 +135,17 @@ def main():
     try:
         while current_pos != GOAL_POS:
             
-            # --- VISION CHECK: Look for Traffic Signs ---
+            # look for traffic sign
             # If a red object is large enough, and we haven't stopped in the last 10 seconds
             if Vilib.detect_obj_parameter.get('color_n', 0) != 0:
                 if Vilib.detect_obj_parameter.get('color_w', 0) > 40:
                     if time.time() - last_stop_time > 10:
-                        print("STOP SIGN DETECTED! Halting for 3 seconds...")
+                        print("Stop sign detected. Stop or 3s")
                         px.stop()
                         time.sleep(3)
                         print("Proceeding...")
                         last_stop_time = time.time()
-            
-            # --- MAPPING & ROUTING CHECK: Avoid Physical Obstacles ---
+            # mapping and routing check
             raw_grid = scan_environment(px)
             safe_grid = add_clearance(raw_grid, radius=CLEARANCE_RADIUS)
             

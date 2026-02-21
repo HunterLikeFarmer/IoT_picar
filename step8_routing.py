@@ -3,7 +3,6 @@ import heapq
 import numpy as np
 from picarx import Picarx
 
-# --- Configuration ---
 GRID_WIDTH = 30
 GRID_HEIGHT = 30
 CAR_POS = (GRID_WIDTH // 2, 0)  # Car starts at bottom-center of the grid
@@ -12,9 +11,9 @@ CLEARANCE_RADIUS = 2  # How many grid cells to inflate obstacles by
 STEP_TIME = 0.5  # Seconds to drive for one grid step
 SPEED = 30
 
-# --- A* Pathfinding Algorithm ---
+# A* Pathfinding Algorithm
 def heuristic(a, b):
-    # Manhattan distance
+    # distance
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 def astar(grid, start, goal):
@@ -65,22 +64,22 @@ def astar(grid, start, goal):
                 
     return None
 
-# --- Mapping & Obstacle Processing ---
+# Mapping and Obstacle Processing
 def add_clearance(grid, radius=1):
-    # Inflates obstacles by a given radius to prevent the car from scraping.
+    # Inflates obstacles by a given radius to prevent the car from scraping
     new_grid = np.copy(grid)
     rows, cols = grid.shape
     for r in range(rows):
         for c in range(cols):
             if grid[r, c] == 1:
-                # Add 1s around the obstacle
+                # Add 1 around the obstacle
                 r_min, r_max = max(0, r - radius), min(rows, r + radius + 1)
                 c_min, c_max = max(0, c - radius), min(cols, c + radius + 1)
                 new_grid[r_min:r_max, c_min:c_max] = 1
     return new_grid
 
 def scan_environment(px):
-    # Generates a localized map of the surroundings.
+    # Generates a map of the surroundings.
     print("Scanning...")
     grid = np.zeros((GRID_HEIGHT, GRID_WIDTH), dtype=int)
     px.set_cam_pan_angle(-60)
@@ -91,7 +90,7 @@ def scan_environment(px):
         time.sleep(0.05)
         
         distance = px.get_distance()
-        d_grid = round(distance / 5.0) # Scale: 1 grid unit = 5 cm
+        d_grid = round(distance / 5.0) # 1 grid unit = 5 cm
         
         if 0 < d_grid < GRID_HEIGHT:
             rad = np.radians(angle)
@@ -104,40 +103,40 @@ def scan_environment(px):
     px.set_cam_pan_angle(0)
     return grid
 
-# --- Movement Execution ---
+# Execution
 def execute_path_step(px, next_node, current_node):
-    """Translates the next grid coordinate into physical car movement."""
+    # translates the next grid coordinate into physical car movement
     dx = next_node[0] - current_node[0]
     dy = next_node[1] - current_node[1]
     
     if dx > 0:
-        print("-> Turning Right")
+        print("  Turning Right")
         px.set_dir_servo_angle(30)
         px.forward(SPEED)
     elif dx < 0:
-        print("-> Turning Left")
+        print("  Turning Left")
         px.set_dir_servo_angle(-30)
         px.forward(SPEED)
     elif dy > 0:
-        print("-> Moving Forward")
+        print("  Moving Forward")
         px.set_dir_servo_angle(0)
         px.forward(SPEED)
     elif dy < 0:
-        print("-> Reversing")
+        print("  Reversing")
         px.set_dir_servo_angle(0)
         px.backward(SPEED)
         
     time.sleep(STEP_TIME)
     px.stop()
 
-# --- Main Routing Loop ---
+# Main Routing Loop
 def main():
     px = Picarx()
     current_pos = CAR_POS
     
     try:
         while current_pos != GOAL_POS:
-            # 1. Scan and add clearance
+            # 1. Scan and add anti-scraping inflation
             raw_grid = scan_environment(px)
             safe_grid = add_clearance(raw_grid, radius=CLEARANCE_RADIUS)
             
