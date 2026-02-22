@@ -71,7 +71,7 @@ def add_clearance(grid, radius=1):
                 new_grid[r_min:r_max, c_min:c_max] = 1
     return new_grid
 
-def scan_environment(px):
+def scan_environment(px, current_pos):
     print("Scanning environment...")
     grid = np.zeros((GRID_HEIGHT, GRID_WIDTH), dtype=int)
     
@@ -84,8 +84,8 @@ def scan_environment(px):
         
         if 0 < d_grid < GRID_HEIGHT:
             rad = np.radians(angle)
-            x_val = int(round(d_grid * np.sin(rad))) + CAR_POS[0]
-            y_val = int(round(d_grid * np.cos(rad))) + CAR_POS[1]
+            x_val = int(round(d_grid * np.sin(rad))) + current_pos[0] 
+            y_val = int(round(d_grid * np.cos(rad))) + current_pos[1] 
             
             if 0 <= x_val < GRID_WIDTH and 0 <= y_val < GRID_HEIGHT:
                 grid[y_val, x_val] = 1
@@ -121,13 +121,16 @@ def main():
     current_pos = CAR_POS
     
     # 1. Initialize Vilib
-    print("Starting camera for Stop Sign detection...")
+    print("Starting camera for Stop Sign and Pedestrian detection...")
     Vilib.camera_start(vflip=False, hflip=False)
     Vilib.display(local=False, web=True)
     time.sleep(2)
     
     # We use color detection to find the Stop Sign (Red)
     Vilib.color_detect("red")
+    
+    # Enable face detection to look for humans/pedestrians
+    Vilib.face_detect_switch(True)
     
     # Cooldown to prevent stopping at the same sign infinitely
     last_stop_time = 0 
@@ -140,13 +143,22 @@ def main():
             if Vilib.detect_obj_parameter.get('color_n', 0) != 0:
                 if Vilib.detect_obj_parameter.get('color_w', 0) > 40:
                     if time.time() - last_stop_time > 10:
-                        print("Stop sign detected. Stop or 3s")
+                        print("Stop sign detected. Stop for 3s")
                         px.stop()
                         time.sleep(3)
                         print("Proceeding...")
                         last_stop_time = time.time()
+                                    
             # mapping and routing check
-            raw_grid = scan_environment(px)
+            raw_grid = scan_environment(px, current_pos) 
+            
+            # if a sudden pedestrain appears
+            if Vilib.detect_obj_parameter.get('human_n', 0) != 0:
+                print("Human (pedestrian) detected! Forcing route around them.")
+                human_x = current_pos[0]
+                human_y = min(GRID_HEIGHT - 1, current_pos[1] + 3) # Assume human is 3 grid units ahead
+                raw_grid[human_y, human_x] = 1 # Treat human as a physical wall
+            
             safe_grid = add_clearance(raw_grid, radius=CLEARANCE_RADIUS)
             
             path = astar(safe_grid, current_pos, GOAL_POS)
@@ -161,6 +173,14 @@ def main():
             # Follow a couple of steps of the path before rescanning
             steps_to_take = min(2, len(path)) 
             for i in range(steps_to_take):
+                
+                # ADDED: Sudden obstacle detection (Dynamic roadblocks)
+                # Check immediately before moving
+                if px.get_distance() < 15: 
+                    print("Sudden obstacle detected! Recalculating route...")
+                    px.stop()
+                    break # Break out of the execution loop to force an immediate rescan
+                
                 next_pos = path[i]
                 execute_path_step(px, next_pos, current_pos)
                 current_pos = next_pos
