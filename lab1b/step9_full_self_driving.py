@@ -5,35 +5,38 @@ from picarx import Picarx
 from vilib import Vilib
 
 # global variable
-GRID_WIDTH = 30
-GRID_HEIGHT = 30
+GRID_WIDTH = 15
+GRID_HEIGHT = 15
 CAR_POS = (GRID_WIDTH // 2, 0)  # Car starts at bottom-center
-GOAL_POS = (GRID_WIDTH // 2, 25) # Goal is straight ahead
-CLEARANCE_RADIUS = 2  
+GOAL_POS = (GRID_WIDTH - 1, GRID_HEIGHT - 1) 
+CLEARANCE_RADIUS = 1
 STEP_TIME = 0.5  
-SPEED = 30
+SPEED = 10
 
 # add interpolation
 def connect_point(grid):
     to_change = []
-    for i in range(GRID_HEIGHT):
-        for j in range(GRID_WIDTH):
+    for y in range(GRID_HEIGHT):
+        for x in range(GRID_WIDTH):
             count_one = 0
-            x_arr = [-1, 0, 1]
-            y_arr = [-1, 0, 1]
-            for x in x_arr:
-                for y in y_arr:
-                    if x == 0 and y == 0:
+            for dy in [-1, 0, 1]:
+                for dx in [-1, 0, 1]:
+                    if dx == 0 and dy == 0:
                         continue
-                    cur_x = i + x
-                    cur_y = j + y
-                    if cur_x >= 0 and cur_y >= 0 and cur_x < GRID_HEIGHT and cur_y < GRID_WIDTH and grid[cur_y, cur_x] == 1:
-                        count_one += 1
+                        
+                    cur_y = y + dy
+                    cur_x = x + dx
+                    
+                    if 0 <= cur_y < GRID_HEIGHT and 0 <= cur_x < GRID_WIDTH:
+                        if grid[cur_y, cur_x] == 1:
+                            count_one += 1
+                            
             if count_one >= 2:
-                to_change.append((j, i))
-    for tup in to_change:
-        x, y = tup
-        grid[x, y] = 1
+                to_change.append((y, x))
+                
+    for y, x in to_change:
+        grid[y, x] = 1
+        
     return grid
 
 # A* Pathfinding Algorithm
@@ -94,7 +97,7 @@ def add_clearance(grid, radius=1):
                 new_grid[r_min:r_max, c_min:c_max] = 1
     return new_grid
 
-def scan_environment(px, current_pos):
+def scan_environment(px, current_pos, visited_positions):
     print("Scanning environment...")
     grid = np.zeros((GRID_HEIGHT, GRID_WIDTH), dtype=int)
     
@@ -115,6 +118,14 @@ def scan_environment(px, current_pos):
                 
     px.set_cam_pan_angle(0) # Reset camera forward for Vilib
     time.sleep(0.2)
+    
+    # Mark traversed coordinates as '2'
+    for vx, vy in visited_positions:
+        if 0 <= vx < GRID_WIDTH and 0 <= vy < GRID_HEIGHT:
+            # Only mark it if it hasn't been overwritten by a new obstacle '1'
+            if grid[vy, vx] == 0:
+                grid[vy, vx] = 2
+                
     print(grid)
     return grid
 
@@ -144,6 +155,10 @@ def main():
     px = Picarx()
     current_pos = CAR_POS
     
+    # Keep track of visited coordinates
+    visited_positions = set()
+    visited_positions.add(current_pos)
+    
     # 1. Initialize Vilib
     print("Starting camera for Stop Sign and Pedestrian detection...")
     Vilib.camera_start(vflip=False, hflip=False)
@@ -163,7 +178,6 @@ def main():
         while current_pos != GOAL_POS:
             
             # look for traffic sign
-            # If a red object is large enough, and we haven't stopped in the last 10 seconds
             if Vilib.detect_obj_parameter.get('color_n', 0) != 0:
                 if Vilib.detect_obj_parameter.get('color_w', 0) > 40:
                     if time.time() - last_stop_time > 10:
@@ -174,12 +188,12 @@ def main():
                         last_stop_time = time.time()
                                     
             # mapping and routing check
-            raw_grid = scan_environment(px, current_pos)
+            raw_grid = scan_environment(px, current_pos, visited_positions)
+            
             # interpolated grid
             raw_grid = connect_point(raw_grid)
              
-            
-            # if a sudden pedestrain appears
+            # if a pedestrian appears visually
             if Vilib.detect_obj_parameter.get('human_n', 0) != 0:
                 print("Human (pedestrian) detected! Forcing route around them.")
                 human_x = current_pos[0]
@@ -200,17 +214,12 @@ def main():
             # Follow a couple of steps of the path before rescanning
             steps_to_take = min(2, len(path)) 
             for i in range(steps_to_take):
-                
-                # Sudden obstacle detection (Dynamic roadblocks)
-                # Check immediately before moving
-                if px.get_distance() < 15: 
-                    print("Sudden obstacle detected! Recalculating route...")
-                    px.stop()
-                    break # Break out of the execution loop to force an immediate rescan
-                
                 next_pos = path[i]
                 execute_path_step(px, next_pos, current_pos)
                 current_pos = next_pos
+                
+                # Log the new position as traversed
+                visited_positions.add(current_pos)
                 
         if current_pos == GOAL_POS:
             print("Successfully reached the destination!")

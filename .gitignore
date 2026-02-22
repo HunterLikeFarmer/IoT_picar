@@ -3,3 +3,6 @@ build/*
 bk/
 *.xml
 __pycache__
+Python-3.11.9
+picarx.egg-info
+picar-env

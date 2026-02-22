@@ -6,7 +6,8 @@ def main():
     # Initialize the camera
     Vilib.camera_start(vflip=False, hflip=False)
     # Start the web stream so you can see what the car sees
-    Vilib.display(local=False, web=True)
+    Vilib.display(local=True, web=True)
+
     time.sleep(2) # Give the camera sensor time to warm up
     
     print("\n" + "="*50)
