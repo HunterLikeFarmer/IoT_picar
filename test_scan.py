@@ -28,6 +28,7 @@ def scan_environment(px, current_pos):
         d_grid = round(distance / 5.0) 
         
         if 0 < d_grid < GRID_HEIGHT:
+            print(d_grid)
             rad = np.radians(angle)
             x_val = int(round(d_grid * np.sin(rad))) + current_pos[0] 
             y_val = int(round(d_grid * np.cos(rad))) + current_pos[1] 
@@ -37,6 +38,7 @@ def scan_environment(px, current_pos):
                 
     px.set_cam_pan_angle(0) # Reset camera forward for Vilib
     time.sleep(0.2)
+    print(grid)
     return grid
 
 if __name__ == "__main__":
