@@ -41,6 +41,7 @@ def scan_environment(px, current_pos):
     return grid
 
 def connect_point(grid):
+    to_change = []
     for i in range(GRID_HEIGHT):
         for j in range(GRID_WIDTH):
             count_one = 0
@@ -55,7 +56,10 @@ def connect_point(grid):
                     if cur_x >= 0 and cur_y >= 0 and cur_x < GRID_HEIGHT and cur_y < GRID_WIDTH and grid[cur_y, cur_x] == 1:
                         count_one += 1
             if count_one >= 2:
-                grid[i, j] = 1
+                to_change.append((j, i))
+    for tup in to_change:
+        x, y = tup
+        grid[x, y] = 1
     return grid
     
             
