@@ -38,10 +38,39 @@ def scan_environment(px, current_pos):
                 
     px.set_cam_pan_angle(0) # Reset camera forward for Vilib
     time.sleep(0.2)
-    print(grid)
     return grid
+
+def connect_point(grid):
+    for i in range(GRID_HEIGHT):
+        for j in range(GRID_WIDTH):
+            count_one = 0
+            x_arr = [-1, 0, 1]
+            y_arr = [-1, 0, 1]
+            for x in x_arr:
+                for y in y_arr:
+                    if x == 0 and y == 0:
+                        continue
+                    cur_x = i + x
+                    cur_y = j + y
+                    if cur_x >= 0 and cur_y >= 0 and cur_x < GRID_HEIGHT and cur_y < GRID_WIDTH and grid[cur_y, cur_x] == 1:
+                        count_one += 1
+            if count_one >= 2:
+                grid[i, j] = 1
+    return grid
+    
+            
+                    
+            
+                
+            
+                
 
 if __name__ == "__main__":
     px = Picarx()
     
-    scan_environment(px, CAR_POS)
+    grid = scan_environment(px, CAR_POS)
+    print("Original Grid: ")
+    print(grid)
+    print("Connected Grid: \n")
+    print(connect_point(grid))
+    
