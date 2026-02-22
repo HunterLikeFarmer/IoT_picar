@@ -174,7 +174,7 @@ def main():
             steps_to_take = min(2, len(path)) 
             for i in range(steps_to_take):
                 
-                # ADDED: Sudden obstacle detection (Dynamic roadblocks)
+                # Sudden obstacle detection (Dynamic roadblocks)
                 # Check immediately before moving
                 if px.get_distance() < 15: 
                     print("Sudden obstacle detected! Recalculating route...")
