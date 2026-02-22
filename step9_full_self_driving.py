@@ -92,6 +92,7 @@ def scan_environment(px, current_pos):
                 
     px.set_cam_pan_angle(0) # Reset camera forward for Vilib
     time.sleep(0.2)
+    print(grid)
     return grid
 
 # Execution
