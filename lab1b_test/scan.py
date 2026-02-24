@@ -67,7 +67,7 @@ def kick_lonely_point(grid):
                 to_change.append((i, j))
     for tup in to_change:
         r, c = tup
-        grid[r, c] = 1
+        grid[r, c] = 0
     return grid
     
 
