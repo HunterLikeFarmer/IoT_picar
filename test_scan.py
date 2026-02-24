@@ -20,9 +20,9 @@ def scan_environment(px, current_pos):
     print("Scanning environment...")
     grid = np.zeros((GRID_HEIGHT, GRID_WIDTH), dtype=int)
     
-    for angle in range(-60, 61, 15): # Scan every 15 degrees to speed it up
+    for angle in range(-60, 60, 5): # Scan every 5 degrees to speed it up
         px.set_cam_pan_angle(angle)
-        time.sleep(0.05)
+        time.sleep(0.1)
         
         distance = px.get_distance()
         d_grid = round(distance / 5.0) 

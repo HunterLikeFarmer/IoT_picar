@@ -44,7 +44,7 @@ def add_clearance(grid, radius=1):
     return new_grid
 
 
-def scan_environment(px, current_pos, visited_positions):
+def scan_environment(px, current_pos, current_heading, visited_positions):
     print("Scanning environment...")
     grid = np.zeros((GRID_HEIGHT, GRID_WIDTH), dtype=int)
 
@@ -54,10 +54,13 @@ def scan_environment(px, current_pos, visited_positions):
         time.sleep(0.05)
 
         distance = px.get_distance()
-        d_grid = round(distance / 5.0)
+        d_grid = round(distance / 10.0)
 
         if 0 < d_grid < GRID_HEIGHT:
-            rad = np.radians(angle)
+            # Factor in the car's current absolute heading
+            absolute_angle = angle + current_heading
+            rad = np.radians(absolute_angle)
+            
             x_val = int(round(d_grid * np.sin(rad))) + current_pos[0]
             y_val = int(round(d_grid * np.cos(rad))) + current_pos[1]
 

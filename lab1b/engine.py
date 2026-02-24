@@ -14,6 +14,7 @@ from utils import add_clearance, connect_point, scan_environment
 def main():
     px = Picarx()
     current_pos = CAR_POS
+    current_heading = 0 # 0=North, 90=East, 180=South, 270=West
 
     visited_positions = {current_pos}
 
@@ -29,23 +30,24 @@ def main():
 
     try:
         while current_pos != GOAL_POS:
-            if Vilib.detect_obj_parameter.get("color_n", 0) != 0:
-                if Vilib.detect_obj_parameter.get("color_w", 0) > 40:
-                    if time.time() - last_stop_time > 10:
-                        print("Stop sign detected. Stop for 3s")
-                        px.stop()
-                        time.sleep(3)
-                        print("Proceeding...")
-                        last_stop_time = time.time()
+            # if Vilib.detect_obj_parameter.get("color_n", 0) != 0:
+            #     if Vilib.detect_obj_parameter.get("color_w", 0) > 40:
+            #         if time.time() - last_stop_time > 10:
+            #             print("Stop sign detected. Stop for 3s")
+            #             px.stop()
+            #             time.sleep(3)
+            #             print("Proceeding...")
+            #             last_stop_time = time.time()
 
-            raw_grid = scan_environment(px, current_pos, visited_positions)
+            # Pass current_heading to the scanner
+            raw_grid = scan_environment(px, current_pos, current_heading, visited_positions)
             raw_grid = connect_point(raw_grid)
 
-            if Vilib.detect_obj_parameter.get("human_n", 0) != 0:
-                print("Human (pedestrian) detected! Forcing route around them.")
-                human_x = current_pos[0]
-                human_y = min(GRID_HEIGHT - 1, current_pos[1] + 3)
-                raw_grid[human_y, human_x] = 1
+            # if Vilib.detect_obj_parameter.get("human_n", 0) != 0:
+            #     print("Human (pedestrian) detected! Forcing route around them.")
+            #     human_x = current_pos[0]
+            #     human_y = min(GRID_HEIGHT - 1, current_pos[1] + 3)
+            #     raw_grid[human_y, human_x] = 1
 
             safe_grid = add_clearance(raw_grid, radius=CLEARANCE_RADIUS)
             path = astar(safe_grid, current_pos, GOAL_POS)
@@ -60,7 +62,10 @@ def main():
             steps_to_take = min(2, len(path))
             for i in range(steps_to_take):
                 next_pos = path[i]
-                execute_path_step(px, next_pos, current_pos)
+                
+                # Execute step and update our heading state
+                current_heading = execute_path_step(px, next_pos, current_pos, current_heading)
+                
                 current_pos = next_pos
                 visited_positions.add(current_pos)
 
