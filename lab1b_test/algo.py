@@ -31,7 +31,7 @@ def astar(grid, start, goal):
         close_set.add(current)
         for i, j in neighbors:
             neighbor = (current[0] + i, current[1] + j)
-            print(current[0], current[1])
+            # print(current[0], current[1])
 
             if not (0 <= neighbor[0] < grid.shape[0] and 0 <= neighbor[1] < grid.shape[1]):
                 continue

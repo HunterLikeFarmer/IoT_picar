@@ -16,8 +16,8 @@ from params import GRID_HEIGHT, GRID_WIDTH
 # SPEED = 30
 
 
-
-def scan_environment(px, current_pos):
+# visited block is a tuple
+def scan_environment(px, current_pos, current_heading, visited_pos, visited_block):
     print("Scanning environment...")
     grid = np.zeros((GRID_HEIGHT, GRID_WIDTH))
     
@@ -29,17 +29,31 @@ def scan_environment(px, current_pos):
         d_grid = distance
         
         if 0 < d_grid < GRID_HEIGHT * 10:
-            print(d_grid)
-            rad = np.radians(angle)
-            x_val = int(round(d_grid * np.sin(rad)) / 20) + current_pos[0] 
+            # print(d_grid)
+            absolute_angle = angle + current_heading
+            rad = np.radians(absolute_angle)
+            x_val = int(round(d_grid * np.sin(rad)) / 10) + current_pos[0] 
             y_val = int(round(d_grid * np.cos(rad)) / 10) + current_pos[1] 
             
             if 0 <= x_val < GRID_WIDTH and 0 <= y_val < GRID_HEIGHT:
                 grid[y_val, x_val] = 1
-                
+                #visited_block.add((y_val, x_val))
+    #connect_point(grid)
+    for i in range(GRID_HEIGHT):
+        for j in range(GRID_WIDTH):
+            if grid[i, j] == 1:
+                visited_block.add((i, j))
+            
     px.set_cam_pan_angle(0) # Reset camera forward for Vilib
     time.sleep(0.2)
-    print(grid)
+    # print(grid)
+    for vx, vy in visited_pos:
+        if 0 <= vx < GRID_WIDTH and 0 <= vy < GRID_HEIGHT:
+            if grid[vy, vx] == 0:
+                grid[vy, vx] = 2
+    for vy, vx in visited_block:
+        grid[vy, vx] = 1
+        
     return grid
 
 def connect_point(grid):
@@ -48,7 +62,7 @@ def connect_point(grid):
         for j in range(GRID_WIDTH):
             count_one = 0
             x_arr = [-1, 0, 1]
-            y_arr = [-1, 0]
+            y_arr = [-1, 0, 1]
             for x in x_arr:
                 for y in y_arr:
                     if x == 0 and y == 0:
