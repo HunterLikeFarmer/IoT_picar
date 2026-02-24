@@ -34,8 +34,9 @@ def main():
         while current_pos != GOAL_POS:
 
             safe_grid = scan_environment(px, current_pos, current_heading, visited_pos, visited_block)
-            safe_grid[GOAL_POS[1], GOAL_POS[0]] = 0
-            #safe_grid = add_clearance(raw_grid, 1)
+            
+            # safe_grid = add_clearance(raw_grid, 1)
+            safe_grid[GOAL_POS[0], GOAL_POS[1]] = 0
             print(safe_grid)
 
             path = astar(safe_grid, current_pos, GOAL_POS)

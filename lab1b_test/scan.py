@@ -86,7 +86,7 @@ def connect_point(grid):
                     cur_r = i + r
                     if cur_c >= 0 and cur_r >= 0 and cur_r < GRID_HEIGHT and cur_c < GRID_WIDTH and grid[cur_r, cur_c] == 1:
                         count_one += 1
-            if count_one >= 3:
+            if count_one >= 2:
                 to_change.append((i, j))
     for tup in to_change:
         r, c = tup
