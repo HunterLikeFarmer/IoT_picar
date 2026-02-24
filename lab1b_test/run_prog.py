@@ -7,14 +7,14 @@ from vilib import Vilib
 
 #Custom Libraries
 from motion import execute_path
-from scan import scan_environment, connect_point, add_clearance
+from scan import scan_environment, add_clearance
 from algo import astar
 from stop_scan import scan_for_stop
 from params import GRID_HEIGHT, GRID_WIDTH
 
 #COL, ROW
 START_POS = (GRID_WIDTH // 2, 0)
-GOAL_POS = (GRID_WIDTH // 2, GRID_HEIGHT - 1)
+GOAL_POS = (0, GRID_HEIGHT - 1)
 
 def main():
     px = Picarx()
@@ -24,6 +24,7 @@ def main():
     visited_block = set()
     raw_grid = None
     safe_grid = None
+    stop_recent = 0
 
     print("Starting camera for Stop Sign detection")
     Vilib.camera_start(vflip=False, hflip=False)
@@ -45,15 +46,17 @@ def main():
                 print("No safe path to goal! Path completely blocked.")
                 px.stop()
                 break
-            steps_to_take = min(3, len(path))
+            steps_to_take = min(4, len(path))
             for i in range (steps_to_take):
                 next_pos = path[i]
                 
                 # Execute step and update our heading state
                 current_heading = execute_path(px, next_pos, current_pos, current_heading)
-                if (scan_for_stop()):
+                if (scan_for_stop() and stop_recent == 0):
+                    stop_recent = 3
                     time.sleep(3)
-                
+                elif stop_recent > 0:
+                    stop_recent -= 1
                 current_pos = next_pos
                 visited_pos.add(current_pos)
 

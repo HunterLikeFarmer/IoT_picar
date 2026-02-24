@@ -6,8 +6,8 @@ FORWARD_TIME = 0.7
 TURN_TIME_LEFT = 1.3
 TURN_BACK_TIME_LEFT = 0.9
 
-TURN_TIME_RIGHT = 2.4
-TURN_BACK_TIME_RIGHT = 2.2
+TURN_TIME_RIGHT = 1.9
+TURN_BACK_TIME_RIGHT = 2.4
 TURN_BACK_TIME_RIGHT_D = 2.6
 
 TURN_TIME_U = 2
@@ -31,7 +31,7 @@ def execute_path(px, next_node, current_node, current_heading):
     
     if turn_angle == 0:
         print("Moving Forward")
-        px.set_dir_servo_angle(-3)
+        px.set_dir_servo_angle(-0.5)
         px.forward(SPEED)
         time.sleep(FORWARD_TIME)
     elif turn_angle == 90:

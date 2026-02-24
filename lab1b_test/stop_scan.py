@@ -59,7 +59,7 @@ def traffic_sign_detect(img, border_rgb=(255, 0, 0)):
 
     for cnt in contours:
         area = cv2.contourArea(cnt)
-        if area > 1000: # Filter out small specks
+        if area > 500: # Filter out small specks
             found, acc = is_stop_sign(cnt, None)
             
             if found:

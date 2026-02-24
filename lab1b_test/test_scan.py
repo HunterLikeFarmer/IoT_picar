@@ -6,7 +6,7 @@ from picarx import Picarx
 
 #Custom Libraries
 from motion import execute_path
-from scan import scan_environment, connect_point, add_clearance
+from scan import scan_environment, add_clearance
 from algo import astar
 from stop_scan import scan_for_stop
 from params import GRID_HEIGHT, GRID_WIDTH
