@@ -6,16 +6,6 @@ from vilib import Vilib
 
 from params import GRID_HEIGHT, GRID_WIDTH
 
-# global variable
-# GRID_WIDTH = 30
-# GRID_HEIGHT = 30
-#CAR_POS = (GRID_WIDTH / 2, 0)  # Car starts at top-center
-#GOAL_POS = (GRID_WIDTH / 2, 25) # Goal is straight ahead
-# CLEARANCE_RADIUS = 1
-# STEP_TIME = 0.5  
-# SPEED = 30
-
-
 # visited block is a tuple
 def scan_environment(px, current_pos, current_heading, visited_pos, visited_block):
     print("Scanning environment...")
@@ -29,7 +19,6 @@ def scan_environment(px, current_pos, current_heading, visited_pos, visited_bloc
         d_grid = distance
         
         if 0 < d_grid < GRID_HEIGHT * 10:
-            # print(d_grid)
             absolute_angle = angle + current_heading
             rad = np.radians(absolute_angle)
             x_val = int(round(d_grid * np.sin(rad)) / 10) + current_pos[0] 
@@ -37,8 +26,9 @@ def scan_environment(px, current_pos, current_heading, visited_pos, visited_bloc
             
             if 0 <= x_val < GRID_WIDTH and 0 <= y_val < GRID_HEIGHT:
                 grid[y_val, x_val] = 1
-                #visited_block.add((y_val, x_val))
+            
     #connect_point(grid)
+    # adding to visited_block
     for i in range(GRID_HEIGHT):
         for j in range(GRID_WIDTH):
             if grid[i, j] == 1:
@@ -46,7 +36,7 @@ def scan_environment(px, current_pos, current_heading, visited_pos, visited_bloc
             
     px.set_cam_pan_angle(0) # Reset camera forward for Vilib
     time.sleep(0.2)
-    # print(grid)
+    
     for vx, vy in visited_pos:
         if 0 <= vx < GRID_WIDTH and 0 <= vy < GRID_HEIGHT:
             if grid[vy, vx] == 0:
@@ -88,20 +78,5 @@ def add_clearance(grid, radius=1):
                 c_min, c_max = max(0, c - radius), min(cols, c + radius + 1)
                 new_grid[r_min:r_max, c_min:c_max] = 1
     return new_grid
-    
-            
-                    
-            
-                
-            
-                
-
-#if __name__ == "__main__":
-#    px = Picarx()
-#    
-#    grid = scan_environment(px, CAR_POS)
-#    print("Original Grid: ")
-#    print(grid)
-#    print("Connected Grid: \n")
-#    print(connect_point(grid))
+          
     

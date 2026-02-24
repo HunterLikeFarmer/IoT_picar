@@ -22,9 +22,8 @@ def main():
     current_pos = START_POS
     visited_pos = {current_pos}
     visited_block = set()
-    raw_grid = np.zeros((10, 10))
-    safe_grid = np.zeros((10, 10))
-    step_count = 0
+    raw_grid = None
+    safe_grid = None
 
     print("Starting camera for Stop Sign detection")
     Vilib.camera_start(vflip=False, hflip=False)
@@ -36,7 +35,6 @@ def main():
 
             safe_grid = scan_environment(px, current_pos, current_heading, visited_pos, visited_block)
             safe_grid[GOAL_POS] = 0
-            # safe_grid = connect_point(raw_grid)
             #safe_grid = add_clearance(raw_grid, 1)
             print(safe_grid)
 
@@ -57,17 +55,6 @@ def main():
                 
                 current_pos = next_pos
                 visited_pos.add(current_pos)
-
-                # step_count = (step_count + 1) % 3
-                # if (step_count == 2):
-                #     raw_grid = scan_environment(px, current_pos, current_heading)
-                #     safe_grid = connect_point(raw_grid)
-                #     #safe_grid = add_clearance(raw_grid, 1)
-                #     print(raw_grid)
-                #     #print(safe_grid)
-
-                #     path = astar(safe_grid, current_pos, GOAL_POS)
-            
 
     except KeyboardInterrupt:
         print("Self-Driving aborted by user.")
