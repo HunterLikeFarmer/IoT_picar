@@ -21,13 +21,13 @@ def scan_environment(px, current_pos, current_heading, visited_pos, visited_bloc
         if 0 < d_grid < GRID_HEIGHT * 10:
             absolute_angle = angle + current_heading
             rad = np.radians(absolute_angle)
-            x_val = int(round(d_grid * np.sin(rad) / 10)) + current_pos[0] 
+            x_val = int(round(d_grid * np.sin(rad) / 20)) + current_pos[0] 
             y_val = int(round(d_grid * np.cos(rad) / 10)) + current_pos[1] 
             
             if 0 <= x_val < GRID_WIDTH and 0 <= y_val < GRID_HEIGHT:
                 grid[y_val, x_val] = 1
             
-    #connect_point(grid)
+    connect_point(grid)
     grid = kick_lonely_point(grid)
     # adding to visited_block
     for i in range(GRID_HEIGHT):
@@ -86,7 +86,7 @@ def connect_point(grid):
                     cur_r = i + r
                     if cur_c >= 0 and cur_r >= 0 and cur_r < GRID_HEIGHT and cur_c < GRID_WIDTH and grid[cur_r, cur_c] == 1:
                         count_one += 1
-            if count_one >= 2:
+            if count_one >= 3:
                 to_change.append((i, j))
     for tup in to_change:
         r, c = tup
