@@ -21,8 +21,8 @@ def scan_environment(px, current_pos, current_heading, visited_pos, visited_bloc
         if 0 < d_grid < GRID_HEIGHT * 10:
             absolute_angle = angle + current_heading
             rad = np.radians(absolute_angle)
-            x_val = int(round(d_grid * np.sin(rad)) / 10) + current_pos[0] 
-            y_val = int(round(d_grid * np.cos(rad)) / 10) + current_pos[1] 
+            x_val = int(round(d_grid * np.sin(rad) / 10)) + current_pos[0] 
+            y_val = int(round(d_grid * np.cos(rad) / 10)) + current_pos[1] 
             
             if 0 <= x_val < GRID_WIDTH and 0 <= y_val < GRID_HEIGHT:
                 grid[y_val, x_val] = 1
@@ -51,21 +51,21 @@ def connect_point(grid):
     for i in range(GRID_HEIGHT):
         for j in range(GRID_WIDTH):
             count_one = 0
-            x_arr = [-1, 0, 1]
-            y_arr = [-1, 0, 1]
-            for x in x_arr:
-                for y in y_arr:
-                    if x == 0 and y == 0:
+            c_arr = [-1, 0, 1]
+            r_arr = [-1, 0, 1]
+            for c in c_arr:
+                for r in r_arr:
+                    if c == 0 and r == 0:
                         continue
-                    cur_x = i + x
-                    cur_y = j + y
-                    if cur_x >= 0 and cur_y >= 0 and cur_x < GRID_HEIGHT and cur_y < GRID_WIDTH and grid[cur_y, cur_x] == 1:
+                    cur_c = j + c
+                    cur_r = i + r
+                    if cur_c >= 0 and cur_r >= 0 and cur_r < GRID_HEIGHT and cur_c < GRID_WIDTH and grid[cur_r, cur_c] == 1:
                         count_one += 1
             if count_one >= 2:
-                to_change.append((j, i))
+                to_change.append((i, j))
     for tup in to_change:
-        x, y = tup
-        grid[x, y] = 1
+        r, c = tup
+        grid[r, c] = 1
     return grid
 
 def add_clearance(grid, radius=1):
