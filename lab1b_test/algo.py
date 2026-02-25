@@ -7,26 +7,26 @@ def heuristic(a, b):
 
 def astar(grid, start, goal):
     neighbors = [(1, 0), (-1, 0), (0, -1), (0, 1)]
-    close_set = set()
-    came_from = {}
-    gscore = {start: 0}
-    fscore = {start: heuristic(start, goal)}
-    oheap = []
+    visited = set()
+    parent_dict = {}
+    from_start_cost = {start: 0}
+    total_cost = {start: heuristic(start, goal)}
+    pq = []
 
-    heapq.heappush(oheap, (fscore[start], start))
+    heapq.heappush(pq, (total_cost[start], start))
 
-    while oheap:
-        current = heapq.heappop(oheap)[1]
+    while pq:
+        current = heapq.heappop(pq)[1]
 
         if current == goal:
             path = []
-            while current in came_from:
+            while current in parent_dict:
                 path.append(current)
-                current = came_from[current]
+                current = parent_dict[current]
             path.reverse()
             return path
 
-        close_set.add(current)
+        visited.add(current)
         for i, j in neighbors:
             neighbor = (current[0] + i, current[1] + j)
 
@@ -35,14 +35,14 @@ def astar(grid, start, goal):
             if grid[neighbor[1], neighbor[0]] == 1:
                 continue
 
-            tentative_g_score = gscore[current] + 1
-            if neighbor in close_set and tentative_g_score >= gscore.get(neighbor, 0):
+            tentative_g_score = from_start_cost[current] + 1
+            if neighbor in visited and tentative_g_score >= from_start_cost.get(neighbor, 0):
                 continue
 
-            if tentative_g_score < gscore.get(neighbor, 0) or neighbor not in [n[1] for n in oheap]:
-                came_from[neighbor] = current
-                gscore[neighbor] = tentative_g_score
-                fscore[neighbor] = tentative_g_score + heuristic(neighbor, goal)
-                heapq.heappush(oheap, (fscore[neighbor], neighbor))
+            if tentative_g_score < from_start_cost.get(neighbor, 0) or neighbor not in [n[1] for n in pq]:
+                parent_dict[neighbor] = current
+                from_start_cost[neighbor] = tentative_g_score
+                total_cost[neighbor] = tentative_g_score + heuristic(neighbor, goal)
+                heapq.heappush(pq, (total_cost[neighbor], neighbor))
 
     return None
