@@ -13,7 +13,7 @@ from stop_scan import scan_for_stop
 from params import GRID_HEIGHT, GRID_WIDTH
 
 #COL, ROW
-START_POS = (GRID_WIDTH // 2, 0)
+START_POS = (0, 0)
 GOAL_POS = (0, GRID_HEIGHT - 1)
 
 def main():
@@ -36,7 +36,7 @@ def main():
 
             safe_grid = scan_environment(px, current_pos, current_heading, visited_pos, visited_block)
             
-            # safe_grid = add_clearance(raw_grid, 1)
+            safe_grid = add_clearance(safe_grid, 1)
             safe_grid[GOAL_POS[0], GOAL_POS[1]] = 0
             print(safe_grid)
 
@@ -46,7 +46,7 @@ def main():
                 print("No safe path to goal! Path completely blocked.")
                 px.stop()
                 break
-            steps_to_take = min(4, len(path))
+            steps_to_take = min(5, len(path))
             for i in range (steps_to_take):
                 next_pos = path[i]
                 

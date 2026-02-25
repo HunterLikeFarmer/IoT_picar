@@ -1,14 +1,13 @@
 import time
 
-SPEED = 15
-FORWARD_TIME = 0.7
+SPEED = 12
+FORWARD_TIME = 0.95
 
-TURN_TIME_LEFT = 1.3
-TURN_BACK_TIME_LEFT = 0.9
+TURN_TIME_LEFT = 1
+TURN_BACK_TIME_LEFT = 1.2
 
-TURN_TIME_RIGHT = 1.9
-TURN_BACK_TIME_RIGHT = 2.4
-TURN_BACK_TIME_RIGHT_D = 2.6
+TURN_TIME_RIGHT = 3.6
+TURN_BACK_TIME_RIGHT = 1.4
 
 TURN_TIME_U = 2
 TURN_TIME_U_2 = 1
@@ -31,23 +30,20 @@ def execute_path(px, next_node, current_node, current_heading):
     
     if turn_angle == 0:
         print("Moving Forward")
-        px.set_dir_servo_angle(-0.5)
+        px.set_dir_servo_angle(3)
         px.forward(SPEED)
         time.sleep(FORWARD_TIME)
     elif turn_angle == 90:
         print("Turning Right")
-        px.set_dir_servo_angle(-60)
-        px.backward(SPEED)
-        time.sleep(TURN_BACK_TIME_RIGHT)
         px.set_dir_servo_angle(60)
         px.forward(SPEED)
         time.sleep(TURN_TIME_RIGHT)
         px.set_dir_servo_angle(-60)
         px.backward(SPEED)
-        time.sleep(TURN_BACK_TIME_RIGHT_D)
+        time.sleep(TURN_BACK_TIME_RIGHT)
         px.set_dir_servo_angle(0)
         px.forward(SPEED)
-        time.sleep(FORWARD_TIME)
+        time.sleep(FORWARD_TIME * 2.2)
     elif turn_angle == 270:
         print("Turning Left")
         px.set_dir_servo_angle(-60)
@@ -58,7 +54,7 @@ def execute_path(px, next_node, current_node, current_heading):
         time.sleep(TURN_BACK_TIME_LEFT)
         px.set_dir_servo_angle(0)
         px.forward(SPEED)
-        time.sleep(FORWARD_TIME)
+        time.sleep(FORWARD_TIME * 1.4)
         
     elif turn_angle == 180:
         print("U-TURN")
@@ -70,10 +66,10 @@ def execute_path(px, next_node, current_node, current_heading):
         time.sleep(TURN_TIME_U)
         px.set_dir_servo_angle(-60)
         px.forward(SPEED)
-        time.sleep(TURN_TIME_U_2)
+        time.sleep(0.3)
         px.set_dir_servo_angle(0)
         px.forward(SPEED)
-        time.sleep(TURN_TIME_U_2)
+        time.sleep(TURN_TIME_U * 1.1)
 
     px.set_dir_servo_angle(0)
     px.stop()

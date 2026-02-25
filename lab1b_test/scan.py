@@ -11,7 +11,7 @@ def scan_environment(px, current_pos, current_heading, visited_pos, visited_bloc
     print("Scanning environment...")
     grid = np.zeros((GRID_HEIGHT, GRID_WIDTH))
     
-    for angle in range(-60, 60, 5): # Scan every 5 degrees
+    for angle in range(-70, 70, 10): # Scan every 5 degrees
         px.set_cam_pan_angle(angle)
         time.sleep(0.1)
         
@@ -19,15 +19,15 @@ def scan_environment(px, current_pos, current_heading, visited_pos, visited_bloc
         d_grid = distance
         
         if 0 < d_grid < GRID_HEIGHT * 10:
-            absolute_angle = angle + current_heading
+            absolute_angle = angle - current_heading
             rad = np.radians(absolute_angle)
-            x_val = int(round(d_grid * np.sin(rad) / 30)) + current_pos[0] 
+            x_val = int(round(d_grid * np.sin(rad) / 25)) + current_pos[0] 
             y_val = int(round(d_grid * np.cos(rad) / 10)) + current_pos[1] 
             
             if 0 <= x_val < GRID_WIDTH and 0 <= y_val < GRID_HEIGHT:
                 grid[y_val, x_val] = 1
             
-    connect_point_heavy(grid)
+    #connect_point_heavy(grid)
     grid = kick_lonely_point(grid)
     # adding to visited_block
     for i in range(GRID_HEIGHT):
@@ -45,7 +45,7 @@ def scan_environment(px, current_pos, current_heading, visited_pos, visited_bloc
     for vy, vx in visited_block:
         grid[vy, vx] = 1
         
-    #connect_point_light(grid)
+    connect_point_light(grid)
     #connect_point_light(grid)
     return grid
 
