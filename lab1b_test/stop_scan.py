@@ -5,9 +5,7 @@ import numpy as np
 
 import time
 import cv2
-# Import Vilib and your custom detection function
-# (Ensure the traffic_sign_detect function from the previous message is in this file)
-# from vilib import Vilib
+
 
 # Parameters for traffic sign detection object
 traffic_sign_obj_parameter = {
@@ -16,9 +14,6 @@ traffic_sign_obj_parameter = {
 }
 
 def is_stop_sign(contour, hsv_crop):
-    """
-    Determines if a contour is a stop sign based on shape and color density.
-    """
     # 1. Shape Approximation
     peri = cv2.arcLength(contour, True)
     approx = cv2.approxPolyDP(contour, 0.03 * peri, True)
@@ -29,16 +24,14 @@ def is_stop_sign(contour, hsv_crop):
     aspect_ratio = float(w) / h
     
     # 3. Stop signs are Octagons (approx 8 sides), 
-    # but in CV they often appear with 6 to 10 sides depending on angle
     if 6 <= sides <= 10 and 0.8 <= aspect_ratio <= 1.2:
-        return True, 100 # Accuracy is hard-coded as we are using logic
+        return True, 100
     return False, 0
 
 def traffic_sign_detect(img, border_rgb=(255, 0, 0)):
     r, g, b = border_rgb
     border_bgr = (b, g, r)
 
-    # Convert to HSV
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
     # Red color range (Stop signs are red)
@@ -89,18 +82,14 @@ def scan_for_stop():
     frame = Vilib.img 
         
     if frame is not None:
-        # 2. Run our custom manual detection logic
-        # This updates the global 'traffic_sign_obj_parameter'
         processed_frame = traffic_sign_detect(frame)
         
-        # 3. Pull the live data from the dictionary
         detected_type = traffic_sign_obj_parameter['t']
         obj_x = traffic_sign_obj_parameter['x']
         obj_y = traffic_sign_obj_parameter['y']
         obj_w = traffic_sign_obj_parameter['w']
         
         if detected_type == 'stop':
-            # Clear line and print coordinates
-            print(f"🛑 STOP SIGN: X:{obj_x:3d} Y:{obj_y:3d} Width:{obj_w:3d}px", end='\r')
+            print(f"STOP SIGN", end='\r')
             return True
     return False
