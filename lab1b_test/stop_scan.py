@@ -14,16 +14,16 @@ traffic_sign_obj_parameter = {
 }
 
 def is_stop_sign(contour, hsv_crop):
-    # 1. Shape Approximation
+    # Shape Approximation
     peri = cv2.arcLength(contour, True)
     approx = cv2.approxPolyDP(contour, 0.03 * peri, True)
     sides = len(approx)
 
-    # 2. Aspect Ratio (Stop signs are roughly square)
+    # Aspect Ratio (Stop signs are roughly square)
     x, y, w, h = cv2.boundingRect(contour)
     aspect_ratio = float(w) / h
     
-    # 3. Stop signs are Octagons (approx 8 sides), 
+    # Stop signs are Octagons (approx 8 sides), 
     if 6 <= sides <= 10 and 0.8 <= aspect_ratio <= 1.2:
         return True, 100
     return False, 0
