@@ -34,26 +34,36 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     case b"87\r\n":
                         #Forward
                         print("Moving Forward")
-                        current_heading = execute_path(px, (0, 0), (0, -1), 0)
-                        x_pos += 1
+                        execute_path(px, (0, 0), (0, -1), 0)
+                        y_pos += 1
                     case b"65\r\n":
                         #Left
                         print("Moving Left")
-                        current_heading = execute_path(px, (0, 0), (-1, 0), 0)
-                        y_pos -= 1
+                        execute_path(px, (0, 0), (-1, 0), 0)
+                        current_heading = (current_heading - 90)
+                        x_pos -= 1
                     case b"68\r\n":
                         #Right
                         print("Moving Right")
-                        current_heading = execute_path(px, (0, 0), (1, 0), 0)
-                        y_pos += 1
+                        execute_path(px, (0, 0), (1, 0), 0)
+                        current_heading = (current_heading + 90)
+                        x_pos += 1
                     case b"83\r\n":
                         #Back
                         print("Moving Back")
-                        current_heading = execute_path(px, (0, 0), (0, 1), 0)
-                        x_pos -= 1
-                send_data = f"{current_heading};{scan_for_stop()};{math.sqrt((x_pos)**2 + (y_pos)**2)};{get_battery_voltage()}"
-                client.sendall(b"Hello")
+                        execute_path(px, (0, 0), (0, 1), 0)
+                        y_pos -= 1
+                    case _:
+                        print(data)
+                    
+                if (current_heading == 270):
+                    current_heading = -90
+                elif (current_heading == -270):
+                    current_heading = 90
+                send_data = f"{current_heading};{scan_for_stop()};{round(math.sqrt((x_pos)**2 + (y_pos)**2), 2)};{round(get_battery_voltage(), 2)}"
+                client.sendall(send_data.encode("utf-8"))
                 print(send_data)
+                print(f"{x_pos}, {y_pos}")
                         
                         
     except: 

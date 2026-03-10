@@ -78,6 +78,7 @@ def execute_path(px, next_node, current_node, current_heading):
         px.set_dir_servo_angle(3)
         px.backward(SPEED)
         time.sleep(FORWARD_TIME)
+        new_heading = 0
 
     px.set_dir_servo_angle(0)
     px.stop()
