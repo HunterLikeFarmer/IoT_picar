@@ -18,11 +18,15 @@ def execute_path(px, next_node, current_node, current_heading):
 
     new_heading = 0
     if new_y == 0 and new_x != 0:
-        if new_x < 0: new_heading = 90
-        elif new_x > 0: new_heading = -90
+        if new_x < 0: 
+            new_heading = 90
+        elif new_x > 0: 
+            new_heading = -90
     elif new_x == 0 and new_y != 0:
-        if new_y > 0: new_heading = 0
-        elif new_y < 0: new_heading = 180
+        if new_y > 0: 
+            new_heading = 0
+        elif new_y < 0: 
+            new_heading = 180
     else:
         print("Error in Next Node: ", new_x, new_y)
 
