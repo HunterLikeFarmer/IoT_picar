@@ -31,41 +31,9 @@ def main():
     Vilib.display(local=True, web=True)
     time.sleep(2)
 
-    try:
-        while current_pos != GOAL_POS:
-
-            safe_grid = scan_environment(px, current_pos, current_heading, visited_pos, visited_block)
-            
-            safe_grid = add_clearance(safe_grid, 1)
-            safe_grid[GOAL_POS[0], GOAL_POS[1]] = 0
-            print(safe_grid)
-
-            path = astar(safe_grid, current_pos, GOAL_POS)
-
-            if not path:
-                print("No safe path to goal! Path completely blocked.")
-                px.stop()
-                break
-            steps_to_take = min(5, len(path))
-            for i in range (steps_to_take):
-                next_pos = path[i]
-                
-                # Execute step and update our heading state
-                current_heading = execute_path(px, next_pos, current_pos, current_heading)
-                if (scan_for_stop() and stop_recent == 0):
-                    stop_recent = 3
-                    time.sleep(3)
-                elif stop_recent > 0:
-                    stop_recent -= 1
-                current_pos = next_pos
-                visited_pos.add(current_pos)
-
-    except KeyboardInterrupt:
-        print("Self-Driving aborted by user.")
-    finally:
-        print("Reach Destination")
-        px.stop()
-        Vilib.camera_close()
+    while True:
+        time.sleep(1)
+        scan_for_stop()
 
 
 if __name__ == "__main__":

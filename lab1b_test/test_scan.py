@@ -22,6 +22,7 @@ def main():
     current_heading = 0
     visited_pos = {current_pos}
     grid = scan_environment(px, current_pos, current_heading, visited_pos, visited_block)
+    grid = add_clearance(grid, 1)
     print(grid)
     # current_pos = (7, 0)
     # visited_pos.add(current_pos)

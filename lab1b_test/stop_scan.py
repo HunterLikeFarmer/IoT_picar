@@ -101,6 +101,8 @@ def scan_for_stop():
         
         if detected_type == 'stop':
             # Clear line and print coordinates
-            print(f"🛑 STOP SIGN: X:{obj_x:3d} Y:{obj_y:3d} Width:{obj_w:3d}px", end='\r')
+            print(f"STOP SIGN: X:{obj_x:3d} Y:{obj_y:3d} Width:{obj_w:3d}px", end='\r')
             return True
+        else:
+            print(f"NO STOP SIGN                             ", end='\r')
     return False
