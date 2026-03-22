@@ -29,7 +29,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             data = client.recv(1024)      # receive 1024 Bytes of message in binary format
             if data != b"":
                 print(data)
-                # client.sendall(data) # Echo back to client
                 match data: 
                     case b"87\r\n":
                         #Forward
